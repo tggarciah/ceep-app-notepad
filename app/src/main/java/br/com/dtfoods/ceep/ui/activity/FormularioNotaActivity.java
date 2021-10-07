@@ -1,8 +1,10 @@
 package br.com.dtfoods.ceep.ui.activity;
 
 import static br.com.dtfoods.ceep.ui.activity.NotasActivityConstantes.CHAVE_NOTA;
-import static br.com.dtfoods.ceep.ui.activity.NotasActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
+import static br.com.dtfoods.ceep.ui.activity.NotasActivityConstantes.CHAVE_POSICAO;
+import static br.com.dtfoods.ceep.ui.activity.NotasActivityConstantes.POSICAO_INVALIDA;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,10 +19,33 @@ import br.com.dtfoods.ceep.model.Nota;
 
 public class FormularioNotaActivity extends AppCompatActivity {
 
+   private int posicao = POSICAO_INVALIDA;
+   private EditText campoTitulo;
+   private EditText campoDescricao;
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_formulario_nota);
+
+      inicializaCampos();
+
+      Intent intent = getIntent();
+      if (intent.hasExtra(CHAVE_NOTA)) {
+         Nota nota = (Nota) intent.getSerializableExtra(CHAVE_NOTA);
+         posicao = intent.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
+         preencheCampos(nota);
+      }
+   }
+
+   private void inicializaCampos() {
+      campoTitulo = findViewById(R.id.formulario_nota_titulo);
+      campoDescricao = findViewById(R.id.formulario_nota_descricao);
+   }
+
+   private void preencheCampos(Nota nota) {
+      campoTitulo.setText(nota.getTitulo());
+      campoDescricao.setText(nota.getDescricao());
    }
 
    @Override
@@ -43,14 +68,13 @@ public class FormularioNotaActivity extends AppCompatActivity {
    private void enviaNota(Nota nota) {
       Intent intent = new Intent();
       intent.putExtra(CHAVE_NOTA, nota);
-      setResult(CODIGO_RESULTADO_NOTA_CRIADA, intent);
+      intent.putExtra(CHAVE_POSICAO, posicao);
+      setResult(Activity.RESULT_OK, intent);
    }
 
    @NonNull
    private Nota criaNota() {
-      EditText campoTitulo = findViewById(R.id.formulario_nota_titulo);
       String titulo = campoTitulo.getText().toString();
-      EditText campoDescricao = findViewById(R.id.formulario_nota_descricao);
       String descricao = campoDescricao.getText().toString();
       return new Nota(titulo, descricao);
    }

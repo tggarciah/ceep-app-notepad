@@ -1,4 +1,4 @@
-package br.com.dtfoods.ceep.ui.recyclerview;
+package br.com.dtfoods.ceep.ui.recyclerview.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.com.dtfoods.ceep.R;
 import br.com.dtfoods.ceep.model.Nota;
+import br.com.dtfoods.ceep.ui.recyclerview.adapter.listener.OnItemClickListener;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotaViewHolder> {
 
@@ -20,6 +21,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
    private final List<Nota> notas;
    private final Context context;
+   private OnItemClickListener onItemClickListener;
 
    public ListaNotasAdapter(Context context, List<Nota> notas) {
       this.context = context;
@@ -50,19 +52,31 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
       notifyItemInserted(notas.indexOf(nota));
    }
 
-   static class NotaViewHolder extends RecyclerView.ViewHolder {
+   public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+      this.onItemClickListener = onItemClickListener;
+   }
+
+   public void altera(int posicao, Nota nota) {
+      notas.set(posicao, nota);
+      notifyItemChanged(posicao);
+   }
+
+   class NotaViewHolder extends RecyclerView.ViewHolder {
 
       private final TextView campoTitulo;
       private final TextView campoDescricao;
+      private Nota nota;
 
       public NotaViewHolder(@NonNull View itemView) {
          super(itemView);
-         
          campoTitulo = itemView.findViewById(R.id.item_nota_titulo);
          campoDescricao = itemView.findViewById(R.id.item_nota_descricao);
+         itemView.setOnClickListener(view ->
+                 onItemClickListener.onItemClick(nota, getAdapterPosition()));
       }
 
       public void vinculaView(Nota nota) {
+         this.nota = nota;
          campoTitulo.setText(nota.getTitulo());
          campoDescricao.setText(nota.getDescricao());
       }

@@ -27,13 +27,16 @@ import br.com.dtfoods.ceep.ui.recyclerview.helper.callback.NotaItemTouchHelperCa
 
 public class ListaNotasActivity extends AppCompatActivity {
 
+   public static final String TITULO_APPBAR = "Notas";
    private ListaNotasAdapter adapter;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_lista_notas);
-      setTitle("Ceep");
+
+      setTitle(TITULO_APPBAR);
+
       List<Nota> todasNotas = pegaTodasAsNotas();
       configuraRecyclerView(todasNotas);
       configuraBotaoInsereNota();
@@ -41,9 +44,6 @@ public class ListaNotasActivity extends AppCompatActivity {
 
    private List<Nota> pegaTodasAsNotas() {
       NotaDAO notaDAO = new NotaDAO();
-      for (int i = 1; i <= 10; i++) {
-         notaDAO.insere(new Nota("Título do card " + i, "Descrição do card " + i));
-      }
       return notaDAO.todos();
    }
 
@@ -75,8 +75,6 @@ public class ListaNotasActivity extends AppCompatActivity {
             int posicao = data.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
             if (ehPosicaoValida(posicao)) {
                altera(nota, posicao);
-            } else {
-               Toast.makeText(this, "Ocorreu um problema na alteração da nota.", Toast.LENGTH_SHORT).show();
             }
          }
       }
@@ -110,7 +108,7 @@ public class ListaNotasActivity extends AppCompatActivity {
    }
 
    private boolean temNota(@Nullable Intent data) {
-      return data.hasExtra(CHAVE_NOTA);
+      return data != null && data.hasExtra(CHAVE_NOTA);
    }
 
    private boolean ehCodigoSucesso(int resultCode) {

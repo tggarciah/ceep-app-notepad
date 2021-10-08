@@ -19,6 +19,9 @@ import br.com.dtfoods.ceep.model.Nota;
 
 public class FormularioNotaActivity extends AppCompatActivity {
 
+   public static final String TITULO_APPBAR_ALTERA = "Altera a nota";
+   public static final String TITULO_APPBAR_NOVO = "Insere a nota";
+
    private int posicao = POSICAO_INVALIDA;
    private EditText campoTitulo;
    private EditText campoDescricao;
@@ -32,9 +35,12 @@ public class FormularioNotaActivity extends AppCompatActivity {
 
       Intent intent = getIntent();
       if (intent.hasExtra(CHAVE_NOTA)) {
+         setTitle(TITULO_APPBAR_ALTERA);
          Nota nota = (Nota) intent.getSerializableExtra(CHAVE_NOTA);
          posicao = intent.getIntExtra(CHAVE_POSICAO, POSICAO_INVALIDA);
          preencheCampos(nota);
+      } else {
+         setTitle(TITULO_APPBAR_NOVO);
       }
    }
 
